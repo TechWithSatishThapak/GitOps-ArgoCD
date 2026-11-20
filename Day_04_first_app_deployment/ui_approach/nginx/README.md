@@ -30,6 +30,7 @@ Day_04_first_app_deployment/
     │
     └── output_images/
         ├── image.png
+        |__ health.png
         ├── nginx_ui_app.png
         ├── pods.png
         ├── replicaset4.png
@@ -112,13 +113,7 @@ Password: <decoded-password>
 
 ## Step 4: Create a New Application
 
-Click:
-
-```text
-NEW APP
-```
-
-Fill the application details.
+![ui_approach](../output_images/NewApplication.png)
 
 ### General
 
@@ -191,13 +186,6 @@ Check deployment:
 kubectl get deployment
 ```
 
-Expected:
-
-```bash
-NAME    READY
-nginx   2/2
-```
-
 ---
 
 ## Step 7: Verify Pods
@@ -222,13 +210,6 @@ Check ReplicaSets:
 kubectl get rs
 ```
 
-Example:
-
-```bash
-NAME                DESIRED
-nginx-5d6d54f5d8    2
-```
-
 ReplicaSet created by the deployment:
 
 ![ui_approach](../output_images/replicaset4.png)
@@ -241,13 +222,6 @@ Check service:
 
 ```bash
 kubectl get svc
-```
-
-Expected:
-
-```bash
-NAME            TYPE        CLUSTER-IP
-nginx-service   ClusterIP
 ```
 
 Service created successfully:
@@ -284,6 +258,8 @@ ArgoCD should display:
 Sync Status : Synced
 Health Status : Healthy
 ```
+
+![ui_approach](../output_images/health.png)
 
 This indicates:
 
@@ -322,22 +298,3 @@ and applies changes when synchronization is triggered.
 
 ---
 
-## Summary
-
-In this exercise, we:
-
-✅ Created an ArgoCD Application using the UI
-
-✅ Connected ArgoCD to a Git repository
-
-✅ Deployed Nginx manifests from Git
-
-✅ Synchronized resources to Kubernetes
-
-✅ Verified Deployment, Pods, ReplicaSet, and Service
-
-✅ Accessed the Nginx application
-
-✅ Observed ArgoCD Sync and Health status
-
-This is the foundation of the GitOps workflow using ArgoCD.
