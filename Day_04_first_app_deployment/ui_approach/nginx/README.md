@@ -151,7 +151,7 @@ Click **Create**.
 
 Application created successfully.
 
-![Application](output_images/nginx_ui_app.png)
+!![ui_approach](../output_images/ngnix_ui_app.png)
 
 ---
 
