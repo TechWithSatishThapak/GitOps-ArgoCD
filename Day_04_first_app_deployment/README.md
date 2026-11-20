@@ -1,360 +1,405 @@
-# Day 04 – First Application Deployment with Argo CD
+# Day 04 - First Application Deployment with Argo CD
 
-In this lesson, we will learn how to deploy applications using Argo CD through three different approaches:
+In this lesson, we will deploy applications using three different Argo CD approaches and understand how Argo CD implements GitOps principles by continuously synchronizing Kubernetes resources with the desired state stored in Git.
 
-1. **UI Approach** – Deploy an NGINX application using the Argo CD Dashboard.
-2. **CLI Approach** – Deploy an Apache application using the Argo CD CLI.
-3. **Declarative Approach** – Deploy an Online Shop application using an Argo CD Application YAML manifest.
-
-Each approach has its own advantages and use cases.
-
-However, the declarative approach is the preferred way to implement GitOps because the desired application configuration is stored and managed in Git.
+By the end of this lesson, you will know how to deploy and manage applications using the Argo CD UI, CLI, and declarative Application manifests.
 
 ---
 
-## 1. Learning Objectives
+## Learning Objectives
 
-By the end of this lesson, you will understand:
+After completing this lesson, you will be able to:
 
-- How to deploy applications using the Argo CD UI.
-- How to create applications using the Argo CD CLI.
-- How to define applications using Kubernetes YAML manifests.
-- The difference between imperative and declarative approaches.
-- How Argo CD synchronizes applications with Git repositories.
-- How to check application Sync Status and Health Status.
+- Deploy applications using the Argo CD Web UI.
+- Create and manage applications using the Argo CD CLI.
+- Define Argo CD Applications using Kubernetes YAML manifests.
+- Understand the difference between imperative and declarative deployments.
+- Verify application Sync Status and Health Status.
+- Understand why Git is considered the source of truth in GitOps.
 
 ---
 
-## 2. Fork and Clone the Demo Repository
+## Repository
 
-We will use an existing GitHub repository containing Kubernetes manifests and instructions for all three deployment approaches.
-
-### Step 1: Fork the repository
-
-Open the following GitHub repository and click the **Fork** button:
-
-https://github.com/TechWithSatishThapak/Argocd_demo.git
-
-This will create a copy of the repository under your GitHub account.
-
-### Step 2: Clone your fork
-
-Run the following command on your local machine:
+Fork and clone the repository:
 
 ```bash
-git clone https://github.com/TechWithSatishThapak/Argocd_demo.git
+git clone https://github.com/<your-github-username>/GitOps-ArgoCD-for-Kubernetes.git
 
-cd argocd-demos
+cd GitOps-ArgoCD-for-Kubernetes
 ```
 
-Replace `<your-username>` with your GitHub username.
+Alternatively, you can directly clone the repository:
+
+```bash
+git clone https://github.com/TechWithSatishThapak/GitOps-ArgoCD-for-Kubernetes.git
+
+cd GitOps-ArgoCD-for-Kubernetes
+```
 
 Verify the repository:
 
 ```bash
 git remote -v
-
 git status
 ```
+
 ---
 
-## 3. Three Approaches to Deploy Applications
+## Project Structure
 
-We will now explore each deployment method.
-
-### Approach 1 – UI Deployment (NGINX)
-
-In this approach, we create an Argo CD Application through the web dashboard.
-
-#### Steps
-
-1. Open the Argo CD UI.
-2. Log in using your Argo CD credentials.
-3. Click **New App**.
-4. Provide the application name, for example, `nginx`.
-5. Select the Argo CD project.
-6. Configure the Git repository URL.
-7. Specify the path containing the NGINX Kubernetes manifests.
-8. Select the destination cluster and namespace.
-9. Create the application and synchronize it.
-
-#### What happens behind the scenes?
-
-- Argo CD connects to the configured Git repository.
-- It reads the Kubernetes manifests from the specified path.
-- It compares the desired configuration with the live Kubernetes resources.
-- After synchronization, Argo CD applies the required resources to the cluster.
-
-#### Verify the deployment
-
-```bash
-kubectl get applications -n argocd
-
-kubectl get pods -A
+```text
+Day_04_first_app_deployment
+├── cli_approach
+├── declarative_approach
+└── ui_approach
+    ├── nginx
+    │   ├── nginx_deployment.yml
+    │   ├── nginx_svc.yml
+    │   └── README.md
+    │
+    └── output_images
 ```
 
-For detailed instructions and the exact repository configuration, refer to:
+---
 
-`ui_approach/nginx/README.md`
+# Approach 1 - UI Deployment (NGINX)
+
+In this approach, we use the Argo CD Dashboard to create and manage an application through the graphical interface.
+
+### What You Will Learn
+
+- Accessing the Argo CD UI
+- Creating an Application
+- Connecting a Git repository
+- Synchronizing resources
+- Monitoring application health
+- Visualizing Kubernetes resources
+
+### Sample Application
+
+```text
+NGINX
+```
+
+### Documentation
+
+For a complete step-by-step guide:
+
+```text
+ui_approach/nginx/README.md
+```
 
 ---
 
-### Approach 2 – CLI Deployment (Apache)
+# Approach 2 - CLI Deployment
 
-In this approach, we create an Argo CD Application using the Argo CD CLI.
+In this approach, we use the Argo CD CLI to create and manage applications directly from the terminal.
 
-The CLI is useful when we want to manage applications directly from the terminal or automate repetitive operations.
+The CLI approach is useful for automation, scripting, and operational tasks.
 
-#### Step 1: Create an Application
+### What You Will Learn
 
-General command:
+- Logging into Argo CD
+- Creating applications
+- Synchronizing applications
+- Viewing application status
+- Performing command-line operations
+
+### Common Commands
+
+Create an application:
 
 ```bash
-argocd app create <APP_NAME> \
-  --repo <GIT_REPOSITORY_URL> \
-  --path <PATH_TO_MANIFESTS> \
+argocd app create <app-name> \
+  --repo <git-repository-url> \
+  --path <manifest-path> \
   --dest-server https://kubernetes.default.svc \
-  --dest-namespace <TARGET_NAMESPACE>
+  --dest-namespace default
 ```
 
-Replace the placeholders with the actual values from the Apache example.
-
-#### Step 2: Check Application status
+Check application status:
 
 ```bash
-argocd app get <APP_NAME>
+argocd app get <app-name>
 ```
 
-#### Step 3: Synchronize the application
+Synchronize an application:
 
 ```bash
-argocd app sync <APP_NAME>
+argocd app sync <app-name>
 ```
 
-#### Step 4: Wait for the application to become healthy
+Wait until the application becomes healthy:
 
 ```bash
-argocd app wait <APP_NAME> --health
+argocd app wait <app-name> --health
 ```
 
-#### What happens behind the scenes?
+### Documentation
 
-- The CLI sends the application creation request to the Argo CD API server.
-- Argo CD creates an Application resource.
-- Argo CD monitors the configured Git repository.
-- During synchronization, the required Kubernetes resources are deployed.
-
-**Note:** `https://kubernetes.default.svc` represents the Kubernetes API server of the cluster where Argo CD is running. If deploying to another cluster, configure the appropriate destination server.
-
-For detailed instructions, refer to:
-
-`cli_approach/apache/README.md`
+```text
+cli_approach/README.md
+```
 
 ---
 
-### Approach 3 – Declarative Deployment (Online Shop)
+# Approach 3 - Declarative Deployment
 
-This is the most important approach from a GitOps perspective.
+This is the recommended approach for implementing GitOps.
 
-Instead of creating an application manually through the UI or CLI, we define the Argo CD Application using a Kubernetes YAML manifest.
+Instead of creating applications manually through the UI or CLI, we define the Argo CD Application as a Kubernetes manifest.
 
-The manifest describes:
+The entire application configuration becomes version-controlled and can be reviewed, approved, and managed through Git workflows.
 
-- Application name.
-- Argo CD project.
-- Git repository URL.
-- Repository path.
-- Target Kubernetes cluster.
-- Target namespace.
-- Synchronization policy.
+### Benefits of the Declarative Approach
 
-#### Example: Application YAML
+- Version Control
+- Auditability
+- Reproducibility
+- Team Collaboration
+- Git as Source of Truth
+- Production-Ready GitOps Workflow
+
+### Example Application Manifest
 
 ```yaml
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 
 metadata:
-  name: online-shop
+  name: sample-app
   namespace: argocd
 
 spec:
   project: default
 
   source:
-    repoURL: https://github.com/<your-username>/argocd-demos.git
+    repoURL: https://github.com/TechWithSatishThapak/GitOps-ArgoCD-for-Kubernetes.git
     targetRevision: HEAD
-    path: declarative_approach/online_shop
+    path: declarative_approach
 
   destination:
     server: https://kubernetes.default.svc
-    namespace: online-shop
-
-  syncPolicy:
-    syncOptions:
-      - CreateNamespace=true
+    namespace: default
 ```
 
-This is an illustrative example. Verify the actual repository path and deployment configuration before applying it.
+Apply the Application:
 
-#### Step 1: Save the Application manifest
+```bash
+kubectl apply -f application.yaml
+```
 
-For example:
+### Documentation
 
 ```text
-applications/
-└── online-shop.yaml
+declarative_approach/README.md
 ```
-
-#### Step 2: Apply the manifest
-
-```bash
-kubectl apply -f applications/online-shop.yaml
-```
-
-#### Step 3: Verify the Application
-
-```bash
-kubectl get applications -n argocd
-```
-
-#### Step 4: Check the application status
-
-```bash
-argocd app get online-shop
-```
-
-Argo CD will monitor the configured Git repository and compare the desired state with the live Kubernetes resources.
-
-**Why is this GitOps?**
-
-Because the desired application configuration is stored in Git.
-
-This provides:
-
-- Version control.
-- Audit history.
-- Reproducible deployments.
-- Easier collaboration.
-- A clear record of configuration changes.
-
-**Important:** Applying an Application YAML manually is a declarative operation. For a complete GitOps workflow, keep the Application definition itself in Git and manage its changes through Git-based workflows.
-
-For the complete Online Shop example, refer to:
-
-`declarative_approach/online_shop/README.md`
 
 ---
 
-## 4. Comparison: UI vs CLI vs Declarative
+# Comparison: UI vs CLI vs Declarative
 
 | Feature | UI Approach | CLI Approach | Declarative Approach |
-|---|---|---|---|
-| Application creation | Argo CD Dashboard | Argo CD CLI | Application YAML |
-| Method | Imperative | Imperative | Declarative |
-| Configuration management | Usually created directly in the cluster | Usually created directly in the cluster | Stored and reviewed in Git |
-| Best for | Learning and demos | Operators and scripting | GitOps and team workflows |
-| Reproducibility | Limited without documented steps | Possible with scripts | High when managed through Git |
-| Version control | Not automatic | Not automatic | Supported through Git |
-
-### Which approach should we use?
-
-- **UI:** Best for beginners who want to understand Argo CD visually.
-- **CLI:** Useful for administrators and automation tasks.
-- **Declarative:** Recommended for production-oriented GitOps workflows.
-
-Remember that Argo CD manages Applications created through all three approaches. The main difference is how we create and maintain the Application configuration.
+|----------|----------|----------|----------|
+| Application Creation | Dashboard | Command Line | YAML Manifest |
+| Deployment Style | Imperative | Imperative | Declarative |
+| Beginner Friendly | ✅ | ⚠️ | ⚠️ |
+| Automation Friendly | ❌ | ✅ | ✅ |
+| Git Version Control | ❌ | ❌ | ✅ |
+| Reproducibility | Limited | Moderate | High |
+| Production Recommended | ❌ | ⚠️ | ✅ |
+| GitOps Ready | ⚠️ | ⚠️ | ✅ |
 
 ---
 
-## 5. Understanding Sync Status and Health Status
+## Which Approach Should You Use?
 
-After deploying an application, always check these two important Argo CD statuses.
+### UI Approach
 
-### Sync Status
+Best for:
 
-Indicates whether the live Kubernetes resources match the desired configuration from Git.
+- Learning Argo CD
+- Demonstrations
+- Visualizing resources
+- Understanding synchronization behavior
 
-Common statuses:
+### CLI Approach
 
-- Synced
-- OutOfSync
-- Unknown
+Best for:
 
-### Health Status
+- Operators
+- CI/CD automation
+- Scripting repetitive tasks
+- Troubleshooting
 
-Indicates whether the deployed resources are healthy according to Argo CD's health assessment.
+### Declarative Approach
 
-Common statuses:
+Best for:
 
-- Healthy
-- Progressing
-- Degraded
-- Suspended
-- Missing
-- Unknown
-
-**Important:** An application can be `Synced` but not `Healthy`.
-
-For example, Kubernetes resources may match the Git configuration, but a Pod may still be failing.
-
-Always check both statuses.
+- Production environments
+- Team collaboration
+- GitOps workflows
+- Infrastructure as Code
 
 ---
 
-## 6. Verification Commands
+# Understanding Argo CD Status
 
-List all Argo CD Applications:
+After deploying an application, always check the following two statuses.
+
+## Sync Status
+
+Sync Status indicates whether the live cluster state matches the configuration stored in Git.
+
+Common statuses:
+
+```text
+Synced
+OutOfSync
+Unknown
+```
+
+### Synced
+
+The Kubernetes cluster matches the desired state stored in Git.
+
+### OutOfSync
+
+A difference exists between Git and the running cluster.
+
+### Unknown
+
+Argo CD cannot determine synchronization status.
+
+---
+
+## Health Status
+
+Health Status indicates whether deployed resources are functioning correctly.
+
+Common statuses:
+
+```text
+Healthy
+Progressing
+Degraded
+Missing
+Suspended
+Unknown
+```
+
+### Healthy
+
+Application resources are running normally.
+
+### Progressing
+
+Resources are still being created or updated.
+
+### Degraded
+
+One or more resources have failed.
+
+### Missing
+
+Expected resources are not present in the cluster.
+
+### Suspended
+
+Resource operation is intentionally suspended.
+
+### Unknown
+
+Argo CD cannot determine resource health.
+
+> **Important:** An application can be **Synced** but not **Healthy**.  
+> For example, Kubernetes resources may match Git perfectly, but pods may still be failing due to application errors.
+
+---
+
+# Verification Commands
+
+List all Argo CD applications:
 
 ```bash
 kubectl get applications -n argocd
 ```
 
-Check application details:
+View application details:
 
 ```bash
-argocd app get <APP_NAME>
+argocd app get <application-name>
 ```
 
-Check Kubernetes resources:
+List application resources:
 
 ```bash
-kubectl get deployments,pods,services -n <TARGET_NAMESPACE>
+argocd app resources <application-name>
 ```
 
-Check application events:
+View Kubernetes resources:
 
 ```bash
-kubectl get events -n <TARGET_NAMESPACE> \
-  --sort-by=.lastTimestamp
+kubectl get deployments,pods,svc
+```
+
+Check Kubernetes events:
+
+```bash
+kubectl get events --sort-by=.lastTimestamp
 ```
 
 ---
 
-## 7. Key Takeaways
+# Key GitOps Concepts Learned
 
-- **UI:** Easy and visual; useful for learning and demonstrations.
-- **CLI:** Scriptable and convenient for terminal-based operations.
-- **Declarative:** Keeps application configuration in YAML and supports GitOps.
-- Argo CD manages applications created through all three approaches.
-- Git should be the source of truth for the desired application configuration.
-- Always verify both Sync Status and Health Status.
+## Desired State
 
----
+The desired state is defined in Git.
 
-## 8. Day 04 Checklist
+```text
+Git Repository
+```
 
-- [ ] Forked the demo repository into my GitHub account.
-- [ ] Cloned my fork to the local system.
-- [ ] Explored the repository structure.
-- [ ] Created the NGINX Application through the Argo CD UI.
-- [ ] Created the Apache Application using the Argo CD CLI.
-- [ ] Created the Online Shop Application using YAML.
-- [ ] Verified application synchronization.
-- [ ] Checked application health.
-- [ ] Verified Kubernetes resources in their target namespaces.
-- [ ] Understood the difference between imperative and declarative deployment.
+Example:
+
+```text
+nginx_deployment.yml
+nginx_svc.yml
+application.yaml
+```
 
 ---
 
-**Next: Day 05 – Argo CD Sync Policies, Automated Sync, Self-Healing and Pruning.**
+## Current State
+
+The current state represents resources running in the Kubernetes cluster.
+
+```text
+Deployments
+Pods
+Services
+Ingresses
+ConfigMaps
+```
+
+---
+
+## Reconciliation
+
+Argo CD continuously compares:
+
+```text
+Desired State (Git)
+         VS
+Current State (Cluster)
+```
+
+Whenever differences are detected, Argo CD can synchronize the cluster back to the desired state.
+
+---
+
+
+
+
