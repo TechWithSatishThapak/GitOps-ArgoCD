@@ -153,6 +153,7 @@ Application created successfully.
 
 ![ui_approach](../output_images/ngnix_ui_app.png)
 
+
 ---
 
 ## Step 5: Synchronize the Application
@@ -205,13 +206,6 @@ List pods:
 
 ```bash
 kubectl get pods
-```
-
-Example:
-
-```bash
-nginx-xxxxxx-yyyyy
-nginx-xxxxxx-zzzzz
 ```
 
 Pods created successfully:
@@ -278,7 +272,7 @@ http://localhost:8081
 
 Expected page:
 
-![Nginx Home Page](output_images/image.png)
+![ui_approach](../output_images/ngnix.png)
 
 ---
 
