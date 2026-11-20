@@ -151,7 +151,7 @@ Click **Create**.
 
 Application created successfully.
 
-!![ui_approach](../output_images/ngnix_ui_app.png)
+![ui_approach](../output_images/ngnix_ui_app.png)
 
 ---
 
@@ -216,7 +216,7 @@ nginx-xxxxxx-zzzzz
 
 Pods created successfully:
 
-![Pods](output_images/pods.png)
+![ui_approach](../output_images/pods.png)
 
 ---
 
@@ -237,7 +237,7 @@ nginx-5d6d54f5d8    2
 
 ReplicaSet created by the deployment:
 
-![ReplicaSet](output_images/replicaset4.png)
+![ui_approach](../output_images/replicaset4.png)
 
 ---
 
@@ -258,7 +258,7 @@ nginx-service   ClusterIP
 
 Service created successfully:
 
-![Service](output_images/services.png)
+![ui_approach](../output_images/services.png)
 
 ---
 
