@@ -31,20 +31,6 @@ Ensure your local environment meets the following requirements before proceeding
 
 Navigate to the sample application directory in your cloned repository:
 
-```bash
-cd argocd-demos/ui_approach/nginx
-```
-
-**Directory Structure:**
-
-```text
-ui_approach/nginx
-├── nginx_deployment.yml
-└── nginx_svc.yml
-```
-
----
-
 ## 🚀 Step-by-Step Deployment Guide
 
 ### Step 1: Access the ArgoCD Web UI
